@@ -8,4 +8,7 @@ export const WORDS: Record<string, string>[] = [
   { answer: "SLOVENLY", prefix: "S", hint: "LOVE", suffix: "NLY" },
   { answer: "FORTUNATE", prefix: "FOR", hint: "TUNA", suffix: "TE" },
   { answer: "FILAMENT", prefix: "FI", hint: "LAME", suffix: "NT" },
+  { answer: "KEYBOARD", prefix: "K", hint: "EYB", suffix: "OARD" },
+  { answer: "LIGHTHOUSE", prefix: "LI", hint: "GHTH", suffix: "OUSE" },
+  { answer: "RESTROOM", prefix: "RE", hint: "STR", suffix: "OOM" },
 ];

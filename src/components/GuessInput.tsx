@@ -23,8 +23,9 @@ export function GuessInput({ handleGuess, hint, status }: Props) {
         disabled={status !== "playing"}
         id="guess-input"
         onChange={(e) => setNewGuess(e.target.value.toUpperCase())}
-        pattern={`[A-Z]+${hint}[A-Z]+`}
+        pattern={`[A-Z]*${hint}[A-Z]*`}
         title={`Guess must sandwich "${hint}"`}
+        autoComplete="off"
         required
         type="text"
         value={newGuess}

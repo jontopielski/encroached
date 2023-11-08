@@ -19,6 +19,12 @@
   gap: 8px;
 }
 
+.rules {
+  text-align: center;
+  margin: auto;
+  width: 100%;
+}
+
 .guess {
   height: 1.5rem;
 }

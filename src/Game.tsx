@@ -9,38 +9,68 @@ const word = WORDS[Math.floor(Math.random() * WORDS.length)];
 
 export function Game() {
   const [hint, setHint] = React.useState<string>(word.hint);
+  const [prefix, setPrefix] = React.useState<string>("");
+  const [suffix, setSuffix] = React.useState<string>("");
   const [guesses, setGuesses] = React.useState<string[]>([]);
   const [gameStatus, setGameStatus] = React.useState<string>("playing");
 
+  const handleLosers = (pre: string, init_hint: string, post: string) => {
+    if (pre + init_hint + post === word.answer) {
+      setGameStatus("won");
+    }
+  }
+
   const handleHintLeft = () => {
-    let entireWord = word.prefix + word.hint + word.suffix;
-    let remainingWord = entireWord.substr(0, (entireWord).length - (hint + word.suffix).length);
-    setHint(remainingWord.charAt(remainingWord.length - 1) + hint);
+    let solutionLength = word.prefix.length;
+    let currentLength = prefix.length;
+    let nextPrefix = word.prefix.substr(solutionLength - (currentLength + 1), solutionLength);
+    setPrefix(nextPrefix);
+    handleLosers(nextPrefix, hint, suffix);
   };
 
   const handleHintRight = () => {
+    let currentLength = suffix.length;
+    let nextSuffix = word.suffix.substr(0, currentLength+1);
+    setSuffix(nextSuffix);  
+    handleLosers(prefix, hint, nextSuffix);
   };
 
   const handleGuess = (guess: string) => {
     const newGuesses: string[] = [...guesses, guess];
     setGuesses(newGuesses);
-
-    if (newGuesses.length <= 6 && newGuesses.includes(word.answer)) {
+    let currentHint = prefix + hint + suffix;
+    if (newGuesses.length <= 6 && guess.includes(currentHint) && guess.length > currentHint.length) {
       setGameStatus("won");
     } else if (newGuesses.length >= 6 && !newGuesses.includes(word.answer)) {
       setGameStatus("lost");
     }
   };
 
+  const getHintWord = () => {
+    if (gameStatus === "won") {
+      return guesses[guesses.length - 1];
+    } else {
+      return prefix + hint + suffix;
+    }
+  };
+
   return (
     <div className="game-wrapper">
-      {gameStatus == "playing" && <Hint word={hint} leftEnabled={true} rightEnabled={true} handleHintLeft={handleHintLeft} handleHintRight={handleHintRight} />}
-      {gameStatus !== "playing" && <h2>{word.answer}</h2>}
+      <div className="rules">
+        <h3>Guess a word that contains the letters below.</h3>
+        <h3>Use the arrow buttons for MORE HINT.</h3>
+        <br />
+        <h3>Resist <span className="temptation">temptation</span>.</h3>
+      </div>
+      {gameStatus == "playing" && <Hint word={getHintWord()} leftEnabled={prefix !== word.prefix} rightEnabled={suffix !== word.suffix} handleHintLeft={handleHintLeft} handleHintRight={handleHintRight} />}
+      
+      {gameStatus !== "playing" && <h2>{getHintWord()}</h2>}
+      
 
       {gameStatus == "playing" && (
         <GuessInput
           handleGuess={handleGuess}
-          hint={word.hint}
+          hint={prefix + hint + suffix}
           status={gameStatus}
         />
       )}
@@ -50,7 +80,7 @@ export function Game() {
           <>
             <p>Congratulations!</p>
             <p>
-              You put the {word.hint} in {word.answer}.
+              You put the {prefix + hint + suffix} in {guesses[guesses.length - 1]}.
             </p>
           </>
         </Result>
